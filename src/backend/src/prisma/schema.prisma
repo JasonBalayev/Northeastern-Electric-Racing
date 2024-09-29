@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role{
+    ADMIN
+    GUEST
+}
+
+model User {
+  id String @id @default(uuid())
+  username String
+  email String
+  role Role
+  title String
+  bio String
+  imageUrl String
+  githubLink String
+  linkedInLink String
+  createdProjects Project[] @relation(name: "userCreated")
+  deletedProjects Project[] @relation(name: "userDeleted")
+  createdExperiences Experience[] @relation(name: "userCreatedExperience")
+  deletedExperiences Experience[] @relation(name: "userDeletedExperience")
+}
+
+model Project {
+  id String @id @default(uuid())
+  title String
+  description String
+  imageUrls String[]
+  skills String[]
+  githubUrl String
+  dataCreated DateTime @default(now())
+  dateDeleted DateTime?  
+  userCreatedID String
+  userCreated User @relation(name: "userCreated", fields: [userCreatedID], references: [id]) 
+  userDeletedID String?
+  userDeleted User? @relation(name: "userDeleted", fields: [userDeletedID], references: [id])
+  
+}
+
+
+model Experience {
+  id String @id @default(uuid())
+  title String
+  description String
+  companyName String
+  location String
+  imageUrls String[]
+  startDate DateTime
+  endDate DateTime?
+  dateCreated DateTime @default(now())
+  dateDeleted DateTime?
+  userCreatedID String
+  userCreated User @relation(name: "userCreatedExperience", fields: [userCreatedID], references: [id])
+  userDeletedID String?
+  userDeleted User? @relation(name: "userDeletedExperience", fields: [userDeletedID], references: [id])
+}
+
