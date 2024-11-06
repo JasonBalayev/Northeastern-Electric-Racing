@@ -1,7 +1,9 @@
-enum Role {
-    ADMIN,
-    GUEST
+export enum Role {
+    ADMIN = "ADMIN",
+    GUEST = "GUEST"
 }
+
+
 export interface User {
     id: String,
     email: String,
